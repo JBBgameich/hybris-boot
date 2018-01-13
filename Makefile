@@ -56,6 +56,7 @@ boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
 initramfs/init: init-script
 	sed -e 's %DATA_PART% $(DATA_PART) g' init-script | sed -e 's %BOOTLOGO% $(BOOTLOGO) g' | sed -e 's %NEVERBOOT% $(NEVERBOOT) g' | \
 	sed -e 's %ALWAYSDEBUG% $(ALWAYSDEBUG) g' > initramfs/init
+	cp init-functions.sh initramfs/
 	chmod +x initramfs/init
 
 initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz

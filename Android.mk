@@ -129,6 +129,7 @@ BOOT_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
 BOOT_RAMDISK := $(BOOT_INTERMEDIATE)/boot-initramfs.gz
 BOOT_RAMDISK_SRC := $(LOCAL_PATH)/initramfs
 BOOT_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
+BOOT_RAMDISK_INIT_FUNCTIONS := $(LOCAL_PATH)/init-functions.sh
 BOOT_RAMDISK_INIT := $(BOOT_INTERMEDIATE)/init
 BOOT_RAMDISK_FILES := $(shell find $(BOOT_RAMDISK_SRC) -type f) $(BOOT_RAMDISK_INIT)
 
@@ -150,6 +151,7 @@ $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 # Deliberately do an mv to force rebuild of init every time since it's
 # really hard to depend on things which may affect init.
 	@mv $(BOOT_RAMDISK_INIT) $(BOOT_INTERMEDIATE)/initramfs/init
+	@mv $(BOOT_RAMDISK_INIT_FUNCTIONS) $(BOOT_INTERMEDIATE)/initramfs/init-functions.sh
 	@cp $(BB_STATIC) $(BOOT_INTERMEDIATE)/initramfs/bin/
 ifeq ($(BOARD_CUSTOM_MKBOOTIMG),pack_intel)
 	@(cd $(BOOT_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | $(MINIGZIP) > $(BOOT_RAMDISK)
@@ -199,6 +201,7 @@ $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@mkdir -p $(RECOVERY_INTERMEDIATE)/initramfs
 	@cp -a $(RECOVERY_RAMDISK_SRC)/*  $(RECOVERY_INTERMEDIATE)/initramfs
 	@mv $(RECOVERY_RAMDISK_INIT) $(RECOVERY_INTERMEDIATE)/initramfs/init
+	@mv $(BOOT_RAMDISK_INIT_FUNCTIONS) $(BOOT_INTERMEDIATE)/initramfs/init-functions.sh
 	@cp $(BB_STATIC) $(RECOVERY_INTERMEDIATE)/initramfs/bin/
 ifeq ($(BOARD_CUSTOM_MKBOOTIMG),pack_intel)
 	@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | $(MINIGZIP) > $(RECOVERY_RAMDISK)
